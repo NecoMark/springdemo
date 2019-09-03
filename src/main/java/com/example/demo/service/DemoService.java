@@ -2,27 +2,20 @@ package com.example.demo.service;
 
 import com.alibaba.fastjson.JSON;
 import com.example.demo.dao.DemoESDao;
+import com.example.demo.dao.DemoInfoDao;
+import com.example.demo.entity.DemoInfoEntity;
 import com.example.demo.entity.MsgEntity;
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.PropertyAccessor;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericToStringSerializer;
-import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
-import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer;
-import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.stereotype.Component;
-import java.nio.charset.Charset;
+import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -30,7 +23,7 @@ import java.util.concurrent.TimeUnit;
  * @date: {2019/4/12} {13:58}
  * @description
  */
-@Component
+@Service
 public class DemoService {
 
     @Autowired
@@ -44,6 +37,9 @@ public class DemoService {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    private DemoInfoDao demoInfoDao;
 
     @KafkaListener(topics = {"my-topic"}, groupId = "my-group")
     public void listen(ConsumerRecord<?, ?> record){
@@ -102,4 +98,21 @@ public class DemoService {
 
     }
 
+
+    public List<DemoInfoEntity> getDemoInfo(){
+        try {
+            return demoInfoDao.getDemoInfo();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public void addDemoInfo(DemoInfoEntity demoInfo){
+        try {
+            demoInfoDao.addDemoInfo(demoInfo);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

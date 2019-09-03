@@ -1,24 +1,17 @@
 package com.example.demo.facade;
 
-import freemarker.template.Configuration;
+import com.example.demo.entity.DemoInfoEntity;
+import com.example.demo.service.DemoService;
 import freemarker.template.Template;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 
 import javax.mail.internet.MimeMessage;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 /**
  * @author ljyang
@@ -31,9 +24,22 @@ public class DemoFacade {
     @Autowired
     FreeMarkerConfigurer freeMarkerConfigurer;
 
+    @Autowired
+    DemoService demoService;
     @GetMapping("/hello")
     public String hello(){
         return "hello";
+    }
+
+    @GetMapping("/demo-info")
+    public List<DemoInfoEntity> getDemoInfo(){
+        return demoService.getDemoInfo();
+    }
+
+    @PostMapping("/demo-info")
+    public void addDemoInfo(@RequestBody DemoInfoEntity demoInfoEntity){
+        demoService.addDemoInfo(demoInfoEntity);
+
     }
 
     @GetMapping("/mail")
